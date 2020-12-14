@@ -10,9 +10,6 @@ class ElectronicItemTypeA extends ElectronicItem
 {
 
     const TYPE = 'type_a';
+    const MAX_EXTRAS = 1;
 
-    public function getPriceWithExtras(): float
-    {
-        return 0;
-    }
 }
