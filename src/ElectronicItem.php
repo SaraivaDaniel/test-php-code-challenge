@@ -1,5 +1,7 @@
 <?php
 
+namespace SaraivaDaniel;
+
 class ElectronicItem
 {
     /**

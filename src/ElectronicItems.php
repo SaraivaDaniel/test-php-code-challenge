@@ -1,5 +1,7 @@
 <?php
 
+namespace SaraivaDaniel;
+
 class ElectronicItems
 {
     private $items = array();
