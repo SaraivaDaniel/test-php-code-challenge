@@ -2,50 +2,40 @@
 
 namespace SaraivaDaniel;
 
-class ElectronicItem
+abstract class ElectronicItem implements IElectronicItem
 {
+
+    const TYPE = '';
+
     /**
      * @var float
      */
-    public $price;
-    /**
-     * @var string
-     */
-    private $type;
-    public $wired;
-    const ELECTRONIC_ITEM_TELEVISION = 'television';
-    const ELECTRONIC_ITEM_CONSOLE = 'console';
-    const ELECTRONIC_ITEM_MICROWAVE = 'microwave';
-    private static $types = array(self::ELECTRONIC_ITEM_CONSOLE,
-        self::ELECTRONIC_ITEM_MICROWAVE, self::ELECTRONIC_ITEM_TELEVISION);
+    private $price;
 
-    function getPrice()
-    {
-        return $this->price;
-    }
-
-    function getType()
-    {
-        return $this->type;
-    }
-
-    function getWired()
-    {
-        return $this->wired;
-    }
-
-    function setPrice($price)
+    public function __construct(float $price)
     {
         $this->price = $price;
     }
 
-    function setType($type)
+    public function getPrice(): float
     {
-        $this->type = $type;
+        return $this->price;
     }
 
-    function setWired($wired)
+    public function getType(): string
     {
-        $this->wired = $wired;
+        $type = static::TYPE;
+
+        if ($type === '') {
+            throw new \Exception("Class type not defined");
+        }
+
+        return $type;
     }
+
+    public function setPrice(float $price): void
+    {
+        $this->price = $price;
+    }
+
 }
