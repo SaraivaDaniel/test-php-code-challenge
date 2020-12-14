@@ -41,19 +41,35 @@ class ElectronicItems
     }
 
     /**
-     * Returns the items depending on the sorting type requested
-     *
+     * Returns the items sorted by price
+     * @param bool $sort_asc Sort ascending if true, or descending if false
+     * @param bool $with_extras Whether to include or not extras in price calculation
      * @return array
      */
-    public function getSortedItems($type)
+    public function getSortedItems(bool $sort_asc = true, bool $with_extras = true): array
     {
-        $sorted = array();
-        foreach ($this->items as $item)
-        {
-            $sorted[($item->price * 100)] = $item;
-        }
-        return ksort($sorted, SORT_NUMERIC);
+        // - Changed to replace use of ksort() as it would fail if two items happened to have same price
+        //   The latter items would replace former ones added to $sorted array
+        // - Renamed $type parameter to $sort_asc option to be more clear
+        // - Added $with_extras option to sort considering extras or not
+        // - Replaced function to sort current array, instead of creating another one
+
+        $callback = function (IElectronicItem $a, IElectronicItem $b) use ($sort_asc, $with_extras) {
+            // we use order to invert the result of the comparison function, in case we want it descending
+            $order = ($sort_asc) ? 1 : -1;
+
+            if ($with_extras) {
+                return ($a->getPriceWithExtras() - $b->getPriceWithExtras()) * $order;
+            } else {
+                return ($a->getPrice() - $b->getPrice()) * $order;
+            }
+        };
+
+        usort($this->items, $callback);
+
+        return $this->items;
     }
+
     /**
      *
      * @param string $type
