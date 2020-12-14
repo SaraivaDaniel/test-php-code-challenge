@@ -11,4 +11,6 @@ interface IElectronicItem
 
     public function getPriceWithExtras(): float;
 
+    public function getType(): string;
+
 }

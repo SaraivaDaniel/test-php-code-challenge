@@ -72,19 +72,19 @@ class ElectronicItems
 
     /**
      *
-     * @param string $type
-     * @return array
+     * @param string $type an electronic item type
+     * @return IElectronicItem[] array of items of selected types (empty if no type or invalid type)
      */
-    public function getItemsByType($type)
+    public function getItemsByType(string $type): array
     {
-        if (in_array($type, ElectronicItem::$types))
-        {
-            $callback = function($item) use ($type)
-            {
-                return $item->type == $type;
-            };
-            $items = array_filter($this->items, $callback);
-        }
-        return false;
+        // Fix function that would always return false
+        // Changed to return empty array if no items of specified type are found
+        // Validation of types should be done in another class, not to violate SRP
+
+        $result = array_filter($this->items, function (IElectronicItem $item) use ($type) {
+            return $item->getType() === $type;
+        });
+
+        return $result;
     }
 }

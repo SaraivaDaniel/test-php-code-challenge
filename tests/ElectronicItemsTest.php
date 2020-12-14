@@ -68,5 +68,43 @@ class ElectronicItemsTest extends TestCase
         $this->assertSame(10.00, $sorted_desc[1]->getPriceWithExtras());
     }
 
+    public function testGetItemsByTypeReturnSelected() {
+        $mock_item_a = $this->createMock(IElectronicItem::class);
+        $mock_item_a->expects($this->any())
+            ->method('getType')
+            ->willReturn('type_a');
+
+        $mock_item_b = $this->createMock(IElectronicItem::class);
+        $mock_item_b->expects($this->any())
+            ->method('getType')
+            ->willReturn('type_b');
+
+        $items = [$mock_item_a, $mock_item_b];
+
+        $electronicItems = new ElectronicItems($items);
+        $filtered = $electronicItems->getItemsByType('type_a');
+
+        $this->assertCount(1, $filtered);
+        $this->assertEquals('type_a', $filtered[0]->getType());
+    }
+
+    public function testGetItemsByTypeReturnNone() {
+        $mock_item_a1 = $this->createMock(IElectronicItem::class);
+        $mock_item_a1->expects($this->any())
+            ->method('getType')
+            ->willReturn('type_a');
+
+        $mock_item_a2 = $this->createMock(IElectronicItem::class);
+        $mock_item_a2->expects($this->any())
+            ->method('getType')
+            ->willReturn('type_a');
+
+        $items = [$mock_item_a1, $mock_item_a2];
+
+        $electronicItems = new ElectronicItems($items);
+        $filtered = $electronicItems->getItemsByType('type_b');
+
+        $this->assertCount(0, $filtered);
+    }
 
 }
