@@ -87,4 +87,9 @@ class ElectronicItems
 
         return $result;
     }
+
+    public function count()
+    {
+        return count($this->items);
+    }
 }

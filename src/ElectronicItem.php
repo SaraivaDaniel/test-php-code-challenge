@@ -2,50 +2,66 @@
 
 namespace SaraivaDaniel;
 
-class ElectronicItem
+use SaraivaDaniel\ElectronicItem\IExtra;
+use SaraivaDaniel\Exception\MaxExtrasException;
+
+abstract class ElectronicItem implements IElectronicItem
 {
+
+    const TYPE = '';
+    const MAX_EXTRAS = 0;
+
     /**
      * @var float
      */
-    public $price;
-    /**
-     * @var string
-     */
-    private $type;
-    public $wired;
-    const ELECTRONIC_ITEM_TELEVISION = 'television';
-    const ELECTRONIC_ITEM_CONSOLE = 'console';
-    const ELECTRONIC_ITEM_MICROWAVE = 'microwave';
-    private static $types = array(self::ELECTRONIC_ITEM_CONSOLE,
-        self::ELECTRONIC_ITEM_MICROWAVE, self::ELECTRONIC_ITEM_TELEVISION);
+    private $price;
+    protected ElectronicItems $extras;
 
-    function getPrice()
+    public function __construct(float $price)
+    {
+        $this->price = $price;
+        $this->extras = new ElectronicItems();
+    }
+
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    function getType()
+    public function getPriceWithExtras(): float
     {
-        return $this->type;
+        return $this->price + $this->extras->getTotalPrice();
     }
 
-    function getWired()
+    public function getType(): string
     {
-        return $this->wired;
+        $type = static::TYPE;
+
+        if ($type === '') {
+            throw new \Exception("Class type not defined");
+        }
+
+        return $type;
     }
 
-    function setPrice($price)
+    public function setPrice(float $price): void
     {
         $this->price = $price;
     }
 
-    function setType($type)
+    /**
+     * @param ElectronicItem $electronicItem
+     * @return ElectronicItem
+     * @throws MaxExtrasException
+     */
+    public function addExtra(IExtra $electronicItem): self
     {
-        $this->type = $type;
+        if ($this->extras->count() >= static::MAX_EXTRAS) {
+            throw new MaxExtrasException("Max extras reached: " . static::TYPE . " allows only " . static::MAX_EXTRAS . " extras");
+        }
+
+        $this->extras->add($electronicItem);
+        return $this;
     }
 
-    function setWired($wired)
-    {
-        $this->wired = $wired;
-    }
 }
