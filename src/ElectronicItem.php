@@ -2,28 +2,26 @@
 
 namespace SaraivaDaniel;
 
+use SaraivaDaniel\ElectronicItem\IAcceptExtras;
 use SaraivaDaniel\ElectronicItem\IExtra;
 use SaraivaDaniel\Exception\MaxExtrasException;
 
-abstract class ElectronicItem implements IElectronicItem
+abstract class ElectronicItem implements IElectronicItem, IAcceptExtras
 {
 
     const TYPE = '';
     const MAX_EXTRAS = 0;
 
-    /**
-     * @var float
-     */
-    private $price;
+    private ?float $price;
     protected ElectronicItems $extras;
 
-    public function __construct(float $price)
+    public function __construct(?float $price = null)
     {
         $this->price = $price;
         $this->extras = new ElectronicItems();
     }
 
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }

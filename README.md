@@ -27,4 +27,4 @@ The actual scenarios are stored in dir `test_scenarios`:
 
 - `scenario01`: default scenario (loaded by default if no scenario specified)
 - `scenario02_error`: treats error when trying to add more than MAX_EXTRAS
-
+- `scenario03_json`: loads data from JSON

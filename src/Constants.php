@@ -9,10 +9,20 @@ use SaraivaDaniel\ElectronicItem\Television;
 
 class Constants
 {
-    private static $types = array(
-        Console::TYPE,
-        Microwave::TYPE,
-        Television::TYPE,
-        Controller::TYPE,
-    );
+    private static $types_map = [
+        Console::TYPE => Console::class,
+        Microwave::TYPE => Microwave::class,
+        Television::TYPE => Television::class,
+        Controller::TYPE => Controller::class,
+    ];
+
+    /**
+     * Return array of type => class map
+     * @return string[]
+     */
+    public static function getClassMap()
+    {
+        return static::$types_map;
+    }
+
 }
