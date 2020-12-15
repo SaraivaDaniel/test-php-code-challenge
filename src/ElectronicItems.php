@@ -28,16 +28,41 @@ class ElectronicItems
     /**
      * Adds an electronic item to the bag
      * @param IElectronicItem $item
+     * @return ElectronicItems
      */
-    public function add(IElectronicItem $item)
+    public function add(IElectronicItem $item): self
     {
         $this->items[] = $item;
         $this->total += $item->getPriceWithExtras();
+        return $this;
     }
 
     public function getTotalPrice(): float
     {
         return $this->total;
+    }
+
+    /**
+     * Sort items internally
+     * @param bool $sort_asc
+     * @param bool $with_extras
+     * @return ElectronicItems
+     */
+    public function sortItems(bool $sort_asc = true, bool $with_extras = true): self
+    {
+        $callback = function (IElectronicItem $a, IElectronicItem $b) use ($sort_asc, $with_extras) {
+            // we use order to invert the result of the comparison function, in case we want it descending
+            $order = ($sort_asc) ? 1 : -1;
+
+            if ($with_extras) {
+                return ($a->getPriceWithExtras() - $b->getPriceWithExtras()) * $order;
+            } else {
+                return ($a->getPrice() - $b->getPrice()) * $order;
+            }
+        };
+
+        usort($this->items, $callback);
+        return $this;
     }
 
     /**
@@ -53,25 +78,14 @@ class ElectronicItems
         // - Renamed $type parameter to $sort_asc option to be more clear
         // - Added $with_extras option to sort considering extras or not
         // - Replaced function to sort current array, instead of creating another one
+        // - Changed to call self::sortItems
 
-        $callback = function (IElectronicItem $a, IElectronicItem $b) use ($sort_asc, $with_extras) {
-            // we use order to invert the result of the comparison function, in case we want it descending
-            $order = ($sort_asc) ? 1 : -1;
-
-            if ($with_extras) {
-                return ($a->getPriceWithExtras() - $b->getPriceWithExtras()) * $order;
-            } else {
-                return ($a->getPrice() - $b->getPrice()) * $order;
-            }
-        };
-
-        usort($this->items, $callback);
-
+        $this->sortItems($sort_asc, $with_extras);
         return $this->items;
     }
 
     /**
-     *
+     * Get array of items of selected type
      * @param string $type an electronic item type
      * @return IElectronicItem[] array of items of selected types (empty if no type or invalid type)
      */
@@ -85,10 +99,15 @@ class ElectronicItems
             return $item->getType() === $type;
         });
 
-        return $result;
+        // reset keys
+        return array_values($result);
     }
 
-    public function count()
+    /**
+     * Return how many items in bag
+     * @return int
+     */
+    public function count(): int
     {
         return count($this->items);
     }
